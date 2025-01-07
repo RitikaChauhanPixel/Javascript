@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project 4</title>
+  <style>
+    .main{
+      height: 600px;
+      width: 600px;
+      background-color: black;
+      color: white;
+      margin-left: 400px;
+    }
+    #h{
+      text-align: center;
+      font-size: 40px;
+    }
+    .form{
+       text-align: center;
+       font-size: 30px; 
+    }
+    #guessField{
+      font-size: 25px;
+      text-align: center;
+    }
+    #subt{
+        font-size: 20px;
+        border-radius: 8px;
+        height: 50px;
+        width: 200px;
+    }
+    .result{
+      text-align: center;
+      font-size: 28px;
+      line-height: 26px;
+    }
+    .guesses{
+      background-color: gray;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="main">
+    <br><br>
+    <h2 id="h">Number Guessing Game</h2> <br>
+    <form class="form">
+        <label for="guessField" id="guess">Guess a Number</label><br>
+        <input type="text" id="guessField" class="guessField"><br><br>
+        <input type="submit" id="subt" class="guessField" value="Submit Guess"><br>
+    </form>
+    <br>
+    <div class="result">
+        <p>Previous Guesses : <span class="guesses"></span></p>
+        <p>Guesses Remaining : <span class="remaining">10</span></p>
+        <p class="lh"></p>
+    </div>
+  </div>
+</body>
+<script>
+    let randomNum = parseInt(Math.random()*100+1)
+    let userinput = document.querySelector("#guessField")
+    let subtn = document.querySelector("#subt")
+    let guesses = document.querySelector(".guesses")
+    let remaining = document.querySelector(".remaining")
+    let lowOrHigh = document.querySelector(".lh")
+    let startOver = document.querySelector(".result")
+
+    const p = document.createElement('p')
+
+    let previousSlot = []
+    let numOfGuesses = 0
+
+    let playGame = true
+    if(playGame){
+      subtn.addEventListener("click",function(e){
+        e.preventDefault();
+        const guess = parseInt(userinput.value);
+        validationOfGuess(guess);  
+      })
+    }
+
+    function validationOfGuess(guess){
+      if(isNaN(guess)){
+        alert(`Please Give valid number..!`)
+      } 
+      else if(guess>100 || guess<1){
+        alert(`Please Give valid number..!`)
+      }
+      else{
+          
+          if(numOfGuesses ===10){
+            displayGuess(guess)
+            displayMsg(`Game Over !! Random Number : ${randomNum}`)
+            endgame()
+          }
+          else{
+            previousSlot.push(guess)
+            displayGuess(guess)
+            LowOrHigh(guess)
+          }
+      }
+    }
+
+    function LowOrHigh(guess){
+      if(guess === randomNum){
+        displayMsg(`You Guessed Right ...${randomNum}`)
+        endgame()
+      } 
+      else if(guess > randomNum){
+        displayMsg(`Number is TOO High..`)
+      }
+      else if(guess < randomNum){
+        displayMsg(`Number is TOO Low..`)
+      }
+    }
+
+    function displayGuess(guess){
+      userinput.value = ''
+      guesses.innerHTML  += `${guess}  `
+      numOfGuesses++;
+      remaining.innerHTML = `${10-numOfGuesses}`
+
+    }
+
+    function displayMsg(msg){
+        lowOrHigh.innerHTML = `<h3>${msg}</h3>`
+    }
+
+    function endgame()
+    {
+       userinput.value = ''
+       userinput.setAttribute('Disabled','');
+       p.classList.add("button")
+       p.innerHTML = `<h3 id="start">Click to Start New Game</h3> ` 
+       p.style.color="hotpink"
+       startOver.appendChild(p)
+       playGame = false
+       startAgain()
+    }
+    
+    function startAgain(){
+      const new1 = document.querySelector("#start")
+      new1.addEventListener("click",function(e){
+        randomNum = parseInt(Math.random()*100+1)
+        previousSlot = []
+        numOfGuesses = 0
+        guesses.innerHTML = ''
+        remaining.innerHTML = `${10-numOfGuesses}`
+        userinput.removeAttribute('disabled')
+        startOver.removeChild(p)
+        playGame = true
+      })
+    }
+</script>
+</html>
